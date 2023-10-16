@@ -1,56 +1,77 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-
+#include <SFML/System.hpp>
+#include <fstream>
+#include <iostream>
+#include <string>
 
 class Engine {
 public:
-    Engine(bool fullscreen, int screenWidth, int screenHeight, int frameRateLimit) {
-        windowSettings.fullscreen = fullscreen;
-        windowSettings.screenWidth = screenWidth;
-        windowSettings.screenHeight = screenHeight;
-        windowSettings.frameRateLimit = frameRateLimit;
-        initialize();
-    }
-
-    void initialize() {
-        sf::ContextSettings contextSettings;
-        contextSettings.antialiasingLevel = 8; // Przyk³adowa ustawienie antyaliasingu
-
-        if (windowSettings.fullscreen) {
-            window.create(sf::VideoMode::getFullscreenModes()[0], "Tytu³ Okna", sf::Style::Fullscreen, contextSettings);
-        } else {
-            window.create(sf::VideoMode(windowSettings.screenWidth, windowSettings.screenHeight), "Tytu³ Okna", sf::Style::Default, contextSettings);
-        }
-
-        window.setFramerateLimit(windowSettings.frameRateLimit);
+    Engine(int width, int height, const std::string& title, int frameRate, bool enableMouse, bool enableKeyboard)
+        : enableMouse(enableMouse), enableKeyboard(enableKeyboard) {
+        window.create(sf::VideoMode(width, height), title);
+        window.setFramerateLimit(frameRate);
+        running = true;
     }
 
     void run() {
-        while (window.isOpen()) {
+        sf::Clock clock;
+
+        while (running) {
             sf::Event event;
             while (window.pollEvent(event)) {
-                if (event.type == sf::Event::Closed) {
-                    window.close();
-                }
+                handleEvent(event);
             }
 
-            // G³ówna logika gry i rysowanie
+            float deltaTime = clock.restart().asSeconds();
 
-            window.clear();
-            // Rysowanie obiektów gry
+            update(deltaTime);
+
+            window.clear(sf::Color::Black);
+            render();
+
             window.display();
         }
     }
 
+    void handleEvent(sf::Event& event) {
+        if (event.type == sf::Event::Closed) {
+            running = false;
+        }
+
+        if (enableKeyboard) {
+            // Obsługa klawiatury
+        }
+
+        if (enableMouse) {
+            // Obsługa myszki
+        }
+    }
+
+    void update(float deltaTime) {
+        // Aktualizacja logiki gry
+    }
+
+    void render() {
+        // Rysowanie elementów gry
+    }
+
+    void saveToLog(const std::string& message) {
+        std::ofstream logFile("log.txt", std::ios::app);
+        if (logFile.is_open()) {
+            logFile << message << std::endl;
+            logFile.close();
+        }
+    }
+
+    void handleErrors(const std::string& errorMessage) {
+        std::cerr << errorMessage << std::endl;
+        saveToLog(errorMessage);
+    }
+
 private:
-    struct WindowSettings {
-        bool fullscreen;
-        int screenWidth;
-        int screenHeight;
-        int frameRateLimit;
-    };
-
     sf::RenderWindow window;
-    WindowSettings windowSettings;
+    bool running;
+    bool enableMouse;
+    bool enableKeyboard;
 };
-
