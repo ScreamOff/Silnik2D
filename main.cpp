@@ -3,20 +3,17 @@
 #include "engine.h"
 
 int main() {
-    int screenWidth = 800;
-    int screenHeight = 600;
-    std::string windowTitle = "Moja Gra";
-    int frameRate = 60;
-    bool enableMouse = true;
-    bool enableKeyboard = true;
+    Engine engine;
 
-    Engine engine(screenWidth, screenHeight, windowTitle, frameRate, enableMouse, enableKeyboard);
+    Rectangle* rect = new Rectangle(100, 100, 200, 100);
+    Circle* circle = new Circle(300, 300, 50);
 
-    try {
-        engine.run();
-    } catch (std::exception& e) {
-        engine.handleErrors(e.what());
-    }
+    engine.addPrimitive(rect);
+    engine.addPrimitive(circle);
+
+    engine.loadBitmap("image.png");
+
+    engine.run();
 
     return 0;
 }

@@ -1,77 +1,128 @@
-#pragma once
 #include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
-#include <fstream>
-#include <iostream>
-#include <string>
+#include <vector>
+
+class Point2D {
+public:
+    float x;
+    float y;
+};
+
+class Primitive {
+public:
+    virtual void draw(sf::RenderWindow& window) = 0;
+    virtual void fill(sf::Color color) = 0;
+    virtual void transform() = 0;
+};
+
+class Rectangle : public Primitive {
+public:
+    Point2D position;
+    float width;
+    float height;
+    sf::RectangleShape shape;
+
+    Rectangle(float x, float y, float w, float h) : position({x, y}), width(w), height(h) {
+        shape.setPosition(sf::Vector2f(x, y));
+        shape.setSize(sf::Vector2f(w, h));
+    }
+
+    void draw(sf::RenderWindow& window) override {
+        window.draw(shape);
+    }
+
+    void fill(sf::Color color) override {
+        shape.setFillColor(color);
+    }
+
+    void transform() override {
+        // Implementacja przekształceń geometrycznych prostokąta
+    }
+};
+
+class Circle : public Primitive {
+public:
+    Point2D center;
+    float radius;
+    sf::CircleShape shape;
+
+    Circle(float x, float y, float r) : center({x, y}), radius(r) {
+        shape.setPosition(sf::Vector2f(x - r, y - r));
+        shape.setRadius(r);
+    }
+
+    void draw(sf::RenderWindow& window) override {
+        window.draw(shape);
+    }
+
+    void fill(sf::Color color) override {
+        shape.setFillColor(color);
+    }
+
+    void transform() override {
+        // Implementacja przekształceń geometrycznych okręgu
+    }
+};
+
+class Bitmap {
+public:
+    sf::Texture texture;
+    sf::Sprite sprite;
+
+    Bitmap() {
+        // Inicjalizacja bitmapy
+    }
+
+    void loadFromFile(const std::string& filename) {
+        if (texture.loadFromFile(filename)) {
+            sprite.setTexture(texture);
+        }
+    }
+
+    void animate() {
+        // Implementacja animowania bitmapy
+    }
+};
 
 class Engine {
 public:
-    Engine(int width, int height, const std::string& title, int frameRate, bool enableMouse, bool enableKeyboard)
-        : enableMouse(enableMouse), enableKeyboard(enableKeyboard) {
-        window.create(sf::VideoMode(width, height), title);
-        window.setFramerateLimit(frameRate);
-        running = true;
-    }
+    Engine() : window(sf::VideoMode(800, 600), "Silnik 2D") {}
 
     void run() {
-        sf::Clock clock;
-
-        while (running) {
+        while (window.isOpen()) {
             sf::Event event;
             while (window.pollEvent(event)) {
-                handleEvent(event);
+                if (event.type == sf::Event::Closed) {
+                    window.close();
+                }
+                // Obsługa klawiatury i myszy
             }
 
-            float deltaTime = clock.restart().asSeconds();
+            window.clear();
 
-            update(deltaTime);
+            // Rysowanie i aktualizacja obiektów
+            for (auto primitive : primitives) {
+                primitive->fill(sf::Color::Blue);
+                primitive->transform();
+                primitive->draw(window);
+            }
 
-            window.clear(sf::Color::Black);
-            render();
+            bitmap.animate();
+            window.draw(bitmap.sprite);
 
             window.display();
         }
     }
 
-    void handleEvent(sf::Event& event) {
-        if (event.type == sf::Event::Closed) {
-            running = false;
-        }
-
-        if (enableKeyboard) {
-            // Obsługa klawiatury
-        }
-
-        if (enableMouse) {
-            // Obsługa myszki
-        }
+    void addPrimitive(Primitive* primitive) {
+        primitives.push_back(primitive);
     }
 
-    void update(float deltaTime) {
-        // Aktualizacja logiki gry
-    }
-
-    void render() {
-        // Rysowanie elementów gry
-    }
-
-    void saveToLog(const std::string& message) {
-        std::ofstream logFile("log.txt", std::ios::app);
-        if (logFile.is_open()) {
-            logFile << message << std::endl;
-            logFile.close();
-        }
-    }
-
-    void handleErrors(const std::string& errorMessage) {
-        std::cerr << errorMessage << std::endl;
-        saveToLog(errorMessage);
+    void loadBitmap(const std::string& filename) {
+        bitmap.loadFromFile(filename);
     }
 
 private:
     sf::RenderWindow window;
-    bool running;
-    bool enableMouse;
-    bool enableKeyboard;
+    std::vector<Primitive*> primitives;
+    Bitmap bitmap;
 };
