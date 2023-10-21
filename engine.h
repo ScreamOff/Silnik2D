@@ -63,6 +63,35 @@ public:
     }
 };
 
+class Line : public Primitive {
+public:
+    Point2D start;
+    Point2D end;
+    sf::RectangleShape shape;
+
+    Line(float x1, float y1, float x2, float y2) : start({ x1, y1 }), end({ x2, y2 }) {
+        float length = std::sqrt(std::pow(x2 - x1, 2) + std::pow(y2 - y1, 2));
+        float angle = std::atan2(y2 - y1, x2 - x1) * 180 / 3.14159265;
+
+        shape.setPosition(x1, y1);
+        shape.setSize(sf::Vector2f(length, 2)); // Grubość linii to 2 piksele
+        shape.setRotation(angle);
+    }
+
+    void draw(sf::RenderWindow& window) override {
+        window.draw(shape);
+    }
+
+    void fill(sf::Color color) override {
+        shape.setFillColor(color);
+    }
+
+    void transform() override {
+        // Nie jest wymagane w przypadku rysowania linii
+    }
+};
+
+
 class Bitmap {
 public:
     sf::Texture texture;
@@ -85,7 +114,14 @@ public:
 
 class Engine {
 public:
-    Engine() : window(sf::VideoMode(800, 600), "Silnik 2D") {}
+    Engine() : window(sf::VideoMode(800, 600), "Silnik 2D") {
+        mouseX = 0;
+        mouseY = 0;
+        font.loadFromFile("arial.ttf"); // Załaduj odpowiednią czcionkę
+        text.setFont(font);
+        text.setCharacterSize(16);
+        text.setFillColor(sf::Color::White);
+    }
 
     void run() {
         while (window.isOpen()) {
@@ -94,7 +130,12 @@ public:
                 if (event.type == sf::Event::Closed) {
                     window.close();
                 }
+
                 // Obsługa klawiatury i myszy
+                if (event.type == sf::Event::MouseMoved) {
+                    mouseX = event.mouseMove.x;
+                    mouseY = event.mouseMove.y;
+                }
             }
 
             window.clear();
@@ -108,6 +149,11 @@ public:
 
             bitmap.animate();
             window.draw(bitmap.sprite);
+
+            // Wyświetl koordynaty myszki w rogu okna
+            std::string mouseCoordinates = "Mouse X: " + std::to_string(mouseX) + " Y: " + std::to_string(mouseY);
+            text.setString(mouseCoordinates);
+            window.draw(text);
 
             window.display();
         }
@@ -125,4 +171,9 @@ private:
     sf::RenderWindow window;
     std::vector<Primitive*> primitives;
     Bitmap bitmap;
+    int mouseX;
+    int mouseY;
+    sf::Font font;
+    sf::Text text;
 };
+
