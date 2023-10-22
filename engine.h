@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <math.h>
 
 class Point2D {
 public:
@@ -142,7 +143,7 @@ public:
 
             // Rysowanie i aktualizacja obiektów
             for (auto primitive : primitives) {
-                primitive->fill(sf::Color::Blue);
+                primitive->fill(sf::Color::Red);
                 primitive->transform();
                 primitive->draw(window);
             }
@@ -176,4 +177,3 @@ private:
     sf::Font font;
     sf::Text text;
 };
-
