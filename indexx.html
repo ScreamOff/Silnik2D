@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konfiguracja Środowiska C++ dla Silnika Gry</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 5px;
+            border: 1px solid #ccc;
+            display: block;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Konfiguracja Środowiska C++ dla Silnika Gry na Windows</h2>
+    <p>Poniżej znajdziesz kroki do skonfigurowania środowiska do tworzenia silnika gry w języku C++ pod systemem Windows:</p>
+
+    <ol>
+        <li>
+            <h3>Instalacja Visual Studio:</h3>
+            <p>Pobierz i zainstaluj <a href="https://visualstudio.microsoft.com/" target="_blank">Visual Studio</a> (zalecana wersja: Visual Studio Community Edition). Podczas instalacji wybierz opcję "Desktop development with C++".</p>
+        </li>
+        <li>
+            <h3>Instalacja Git:</h3>
+            <p>Pobierz i zainstaluj <a href="https://git-scm.com/" target="_blank">Git</a>.</p>
+        </li>
+        <li>
+            <h3>Instalacja CMake:</h3>
+            <p>Pobierz i zainstaluj <a href="https://cmake.org/" target="_blank">CMake</a>.</p>
+        </li>
+        <li>
+            <h3>Instalacja GLFW:</h3>
+            <p>Otwórz terminal Git Bash i wykonaj następujące polecenia:</p>
+            <code>git clone https://github.com/glfw/glfw.git</code>
+            <code>cd glfw</code>
+            <code>mkdir build</code>
+            <code>cd build</code>
+            <code>cmake -G "Visual Studio 16 2019" ..</code>
+            <p>Upewnij się, że wybrana wersja "Visual Studio" jest zgodna z tą, którą zainstalowałeś. Otwórz projekt w Visual Studio i skompiluj go.</p>
+        </li>
+        <li>
+            <h3>Tworzenie projektu w Visual Studio:</h3>
+            <p>Otwórz Visual Studio. Wybierz "Create a new project", a następnie "Empty Project". Dodaj plik main.cpp do projektu, w którym będziesz pisał swój kod.</p>
+        </li>
+        <li>
+            <h3>Konfiguracja projektu z GLFW:</h3>
+            <p>Skopiuj pliki nagłówkowe GLFW (folder include) do folderu C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.xx.xx\include. Skopiuj bibliotekę GLFW (plik .lib z folderu lib-vc2019) do folderu C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.xx.xx\lib. Skopiuj plik .dll z folderu lib-vc2019 do folderu, w którym znajduje się plik wykonywalny Twojego projektu.</p>
+        </li>
+        <li>
+            <h3>Dodanie kodu do projektu:</h3>
+            <p>Dodaj kod do pliku main.cpp. Przykładowy kod z poprzednich odpowiedzi może być dobrym punktem startowym.</p>
+        </li>
+        <li>
+            <h3>Uruchomienie projektu:</h3>
+            <p>Skompiluj i uruchom projekt w Visual Studio.</p>
+        </li>
+    </ol>
+
+</body>
+</html>
